@@ -1,0 +1,7 @@
+{
+  "name": "AgroVision AI",
+  "description": "An advanced crop analysis and disease detection tool powered by Gemini 3 Pro. Identify crops, diagnose plant health, and receive expert recommendations by simply taking a photo.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
