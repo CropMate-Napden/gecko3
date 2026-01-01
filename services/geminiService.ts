@@ -21,7 +21,7 @@ export const analyzeCropImage = async (base64Image: string): Promise<AnalysisRes
   const prompt = "Analyze this crop image and provide a detailed health report including identification, disease detection (if any), and expert recommendations.";
 
   const response = await ai.models.generateContent({
-    model: 'gemini-2-flash',
+    model: 'gemini-2.5-flash',
     contents: [
       {
         parts: [
