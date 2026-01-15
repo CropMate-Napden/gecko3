@@ -12,95 +12,125 @@ const AnalysisView: React.FC<AnalysisViewProps> = ({ result, image, onReset }) =
   const isHealthy = result.healthStatus === 'Healthy';
 
   return (
-    <div className="max-w-4xl mx-auto px-4 pb-20 pt-6">
+    <div className="max-w-5xl mx-auto px-4 pb-20 pt-6">
       <div className="mb-8 flex flex-col md:flex-row gap-8">
+        {/* Left Column: Image & Actions */}
         <div className="w-full md:w-1/3">
-          <div className="rounded-2xl overflow-hidden shadow-2xl border-4 border-white aspect-square bg-gray-100">
+          <div className="rounded-3xl overflow-hidden shadow-2xl border-4 border-gray-700 aspect-square bg-gray-800 relative group">
             <img 
               src={`data:image/jpeg;base64,${image}`} 
               alt="Analyzed crop" 
               className="w-full h-full object-cover"
             />
+            {/* AR Overlay Simulation */}
+            {!isHealthy && (
+              <div className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div className="border-2 border-red-500 rounded-lg p-2 bg-black/50 backdrop-blur-sm">
+                  <p className="text-red-400 text-xs font-bold uppercase">Issue Detected</p>
+                </div>
+              </div>
+            )}
           </div>
           <button 
             onClick={onReset}
-            className="mt-4 w-full py-3 border-2 border-emerald-600 text-emerald-600 font-semibold rounded-xl hover:bg-emerald-50 transition-colors"
+            className="mt-6 w-full py-4 border-2 border-emerald-600 text-emerald-400 font-bold rounded-2xl hover:bg-emerald-900/20 transition-all active:scale-95"
           >
             Scan New Plant
           </button>
         </div>
 
+        {/* Right Column: Detailed Analysis */}
         <div className="flex-1">
-          <div className="flex items-center justify-between mb-2">
-            <h2 className="text-3xl font-bold text-gray-900">{result.cropName}</h2>
-            <span className={`px-4 py-1.5 rounded-full text-sm font-bold uppercase tracking-wider ${
-              isHealthy ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+          {/* Header */}
+          <div className="flex items-start justify-between mb-4">
+            <div>
+              <h2 className="text-4xl font-extrabold text-white mb-1">{result.cropName}</h2>
+              <div className="flex items-center space-x-2 text-gray-400">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-emerald-500" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                </svg>
+                <span className="text-sm font-medium">AI Confidence: {(result.confidence * 100).toFixed(1)}%</span>
+              </div>
+            </div>
+            <span className={`px-5 py-2 rounded-xl text-sm font-bold uppercase tracking-wider shadow-lg ${
+              isHealthy ? 'bg-green-900 text-green-400 border border-green-700' : 'bg-red-900 text-red-400 border border-red-700'
             }`}>
               {result.healthStatus}
             </span>
           </div>
-          
-          <div className="flex items-center space-x-2 text-gray-500 mb-6">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-emerald-500" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-            </svg>
-            <span className="text-sm font-medium">Confidence: {(result.confidence * 100).toFixed(1)}%</span>
-          </div>
 
-          {!isHealthy && (
-            <div className="bg-orange-50 border-l-4 border-orange-400 p-4 mb-8 rounded-r-xl">
-              <h3 className="text-lg font-bold text-orange-800 mb-1">Diagnosis: {result.diseaseName}</h3>
-              <p className="text-orange-700 text-sm leading-relaxed">{result.cause}</p>
+          {/* Next Best Step (Priority Action) */}
+          {result.nextBestStep && (
+            <div className="bg-gradient-to-r from-emerald-900/50 to-teal-900/50 border border-emerald-700/50 p-5 rounded-2xl mb-6 shadow-lg">
+              <div className="flex items-center gap-2 mb-2">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <h3 className="text-emerald-400 text-xs font-bold uppercase tracking-widest">Priority Action</h3>
+              </div>
+              <p className="text-white font-bold text-lg">{result.nextBestStep}</p>
             </div>
           )}
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <section>
-              <h4 className="text-lg font-bold text-gray-800 mb-4 flex items-center">
-                <span className="w-8 h-8 bg-emerald-100 text-emerald-600 rounded-lg flex items-center justify-center mr-2 text-sm">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
-                  </svg>
-                </span>
-                Recommendations
-              </h4>
-              <ul className="space-y-3">
-                {result.recommendations.map((rec, i) => (
-                  <li key={i} className="flex items-start text-sm text-gray-600">
-                    <span className="text-emerald-500 mr-2 mt-0.5">•</span>
-                    {rec}
-                  </li>
-                ))}
-              </ul>
-            </section>
+          {/* Diagnosis & Evidence */}
+          {!isHealthy && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+              <div className="bg-gray-800 p-5 rounded-2xl border border-gray-700">
+                <h3 className="text-gray-400 text-xs font-bold uppercase mb-2">Diagnosis</h3>
+                <p className="text-white font-bold text-lg mb-1">{result.diseaseName}</p>
+                <p className="text-gray-400 text-sm">{result.cause}</p>
+              </div>
+              <div className="bg-gray-800 p-5 rounded-2xl border border-gray-700">
+                <h3 className="text-gray-400 text-xs font-bold uppercase mb-2">Visual Evidence</h3>
+                <p className="text-gray-300 text-sm leading-relaxed italic">"{result.visualEvidence || "Symptoms detected on leaves."}"</p>
+              </div>
+            </div>
+          )}
 
-            <section>
-              <h4 className="text-lg font-bold text-gray-800 mb-4 flex items-center">
-                <span className="w-8 h-8 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center mr-2 text-sm">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" />
-                    <path fillRule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clipRule="evenodd" />
-                  </svg>
-                </span>
-                Preventative Measures
-              </h4>
-              <ul className="space-y-3">
-                {result.preventativeMeasures.map((measure, i) => (
-                  <li key={i} className="flex items-start text-sm text-gray-600">
-                    <span className="text-blue-500 mr-2 mt-0.5">•</span>
-                    {measure}
-                  </li>
+          {/* Yield Impact */}
+          {!isHealthy && result.yieldImpact && (
+             <div className="bg-orange-900/20 border border-orange-800 p-5 rounded-2xl mb-8 flex items-center gap-4">
+                <div className="w-10 h-10 rounded-full bg-orange-900/50 flex items-center justify-center text-orange-500 font-bold text-xl">!</div>
+                <div>
+                  <h3 className="text-orange-400 text-sm font-bold uppercase">Yield Impact Prediction</h3>
+                  <p className="text-white font-medium">{result.yieldImpact}</p>
+                </div>
+             </div>
+          )}
+
+          {/* Treatment Options with Pricing */}
+          {!isHealthy && result.treatmentOptions && (
+            <div className="mb-8">
+              <h3 className="text-xl font-bold text-white mb-4">Treatment Options</h3>
+              <div className="space-y-3">
+                {result.treatmentOptions.map((option, i) => (
+                  <div key={i} className="bg-gray-800 p-5 rounded-2xl border border-gray-700 flex flex-col md:flex-row justify-between gap-4">
+                    <div>
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className={`text-xs font-bold px-2 py-0.5 rounded ${
+                          option.type === 'Organic' ? 'bg-green-900 text-green-400' : 
+                          option.type === 'Chemical' ? 'bg-purple-900 text-purple-400' : 'bg-blue-900 text-blue-400'
+                        }`}>{option.type}</span>
+                        <h4 className="text-white font-bold">{option.name}</h4>
+                      </div>
+                      <p className="text-gray-400 text-sm">{option.instructions}</p>
+                    </div>
+                    {option.estimatedPrice && (
+                      <div className="text-right min-w-[100px]">
+                        <p className="text-xs text-gray-500 uppercase font-bold">Est. Price</p>
+                        <p className="text-emerald-400 font-bold text-lg">{option.estimatedPrice}</p>
+                      </div>
+                    )}
+                  </div>
                 ))}
-              </ul>
-            </section>
-          </div>
+              </div>
+            </div>
+          )}
           
           {!isHealthy && result.symptoms && result.symptoms.length > 0 && (
-            <div className="mt-8 bg-gray-50 rounded-2xl p-6">
-              <h4 className="font-bold text-gray-900 mb-3">Detected Symptoms</h4>
+            <div className="mt-8 bg-gray-800 rounded-2xl p-6 border border-gray-700">
+              <h4 className="font-bold text-white mb-3">Detected Symptoms</h4>
               <div className="flex flex-wrap gap-2">
                 {result.symptoms.map((symptom, i) => (
-                  <span key={i} className="bg-white px-3 py-1 rounded-full border border-gray-200 text-xs text-gray-600 font-medium">
+                  <span key={i} className="bg-gray-700 px-3 py-1 rounded-full border border-gray-600 text-xs text-gray-300 font-medium">
                     {symptom}
                   </span>
                 ))}

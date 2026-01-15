@@ -6,7 +6,19 @@ export interface AnalysisResult {
   diseaseName?: string;
   symptoms?: string[];
   cause?: string;
-  recommendations: string[];
+  
+  // New Advanced Fields
+  visualEvidence?: string; // Text description of WHERE the issue is (e.g., "Yellowing on lower leaves")
+  yieldImpact?: string; // e.g., "15% potential loss if untreated"
+  treatmentOptions?: {
+    name: string;
+    type: 'Organic' | 'Chemical' | 'Cultural';
+    estimatedPrice?: string; // e.g., "$15 - $20 per liter"
+    instructions: string;
+  }[];
+  nextBestStep?: string; // Single actionable priority, e.g., "Spray Neem Oil immediately"
+  
+  recommendations: string[]; // Keeping for backward compatibility
   preventativeMeasures: string[];
 }
 
@@ -15,6 +27,15 @@ export interface HistoryItem {
   timestamp: number;
   image: string;
   result: AnalysisResult;
+  // Future: Add location data here
+  location?: { lat: number; lng: number };
+}
+
+export interface HistoryAnalysisResult {
+  overallSummary: string;
+  identifiedPatterns: string[];
+  recommendations: string[];
+  predictedActions: string[];
 }
 
 export enum AppState {
